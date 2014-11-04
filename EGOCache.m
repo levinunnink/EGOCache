@@ -326,8 +326,15 @@ static inline NSString* cachePathForKey(NSString* directory, NSString* key) {
 }
 
 - (void)setImage:(NSImage*)anImage forKey:(NSString*)key withTimeoutInterval:(NSTimeInterval)timeoutInterval {
-	[self setData:[[[anImage representations] objectAtIndex:0] representationUsingType:NSPNGFileType properties:nil]
-		   forKey:key withTimeoutInterval:timeoutInterval];
+	[self setData:[self NSImagePNGRepresentation: anImage] forKey:key
+        withTimeoutInterval:timeoutInterval];
+}
+
+- (NSData *)NSImagePNGRepresentation:(NSImage *)img {
+    [img lockFocus];
+    NSBitmapImageRep *imgBitmapRep = [[NSBitmapImageRep alloc] initWithFocusedViewRect:NSMakeRect(0.0, 0.0, [img size].width, [img size].height)] ;
+    [img unlockFocus] ;
+    return [imgBitmapRep representationUsingType:NSPNGFileType properties:nil];
 }
 
 #endif
